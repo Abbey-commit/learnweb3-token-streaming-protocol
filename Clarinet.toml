@@ -5,10 +5,12 @@ authors = []
 telemetry = true
 cache_dir = '.\.cache'
 requirements = []
-[contracts.streaming-protocol]
-path = 'contracts/streaming-protocol.clar'
+
+[contracts.stream]
+path = 'contracts/stream.clar'
 clarity_version = 3
 epoch = 'latest'
+
 [repl.analysis]
 passes = ['check_checker']
 

@@ -58,13 +58,14 @@ genesis:
     - pox-4
     - signers
     - signers-voting
+    - costs-4
 plan:
   batches:
     - id: 0
       transactions:
         - emulated-contract-publish:
-            contract-name: streaming-protocol
+            contract-name: stream
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/streaming-protocol.clar
+            path: contracts/stream.clar
             clarity-version: 3
       epoch: "3.2"
