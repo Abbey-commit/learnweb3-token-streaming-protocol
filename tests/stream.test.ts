@@ -92,7 +92,7 @@ describe("test token streaming contract", () => {
     const withdraw = simnet.callPublicFn(
       "stream",
       "withdraw",
-      [Cl.uint(0), Cl.uint(3)], // FIX: Added amount parameter
+      [Cl.uint(0), Cl.uint(3)],
       recipient
     );
 
@@ -105,7 +105,7 @@ describe("test token streaming contract", () => {
     const withdraw = simnet.callPublicFn(
       "stream",
       "withdraw",
-      [Cl.uint(0), Cl.uint(1)], // FIX: Added amount parameter
+      [Cl.uint(0), Cl.uint(1)],
       randomUser
     );
 
@@ -122,7 +122,7 @@ describe("test token streaming contract", () => {
     simnet.callPublicFn(
       "stream",
       "withdraw",
-      [Cl.uint(0), Cl.uint(3)], // FIX: Added amount parameter
+      [Cl.uint(0), Cl.uint(3)],
       recipient
     );
 
@@ -156,20 +156,18 @@ describe("test token streaming contract", () => {
       sender
     );
 
-    // FIX: hash-stream returns (ok (buff 32)), so we need to unwrap and convert properly
     const hashResult = hashedStream0.result;
     
-    // The result has structure: {type: "ok", value: {type: "buffer", value: "hex-string"}}
-    // Check if it's an ok response (type is string "ok")
     if (hashResult.type !== "ok") {
       throw new Error(`hash-stream failed: ${JSON.stringify(hashResult)}`);
     }
     
     // Extract the buffer value - it's already a hex string
-    const hashValue = "0x" + hashResult.value.value;
+    const hashValue = hashResult.value.value;
 
+    // FIX: signMessageHashRsv returns a string directly, not an object with .data
     const signature = signMessageHashRsv({
-      messageHash: hashValue,
+      messageHash: hashValue.replace(/^0x/, ''),
       privateKey: "7287ba251d44a4d3fd9276c88ce34c5c52a038955511cccaf77e61068649c17801",
     });
 
@@ -177,8 +175,8 @@ describe("test token streaming contract", () => {
       "stream",
       "validate-signature",
       [
-        Cl.bufferFromHex(hashValue.slice(2)), // Remove 0x prefix
-        Cl.bufferFromHex(signature.data),
+        Cl.bufferFromHex(hashValue.replace(/^0x/, '')),
+        Cl.bufferFromHex(signature), // FIX: Use signature directly, not signature.data
         Cl.principal(sender),
       ],
       sender
@@ -199,20 +197,18 @@ describe("test token streaming contract", () => {
       sender
     );
 
-    // FIX: hash-stream returns (ok (buff 32)), so we need to unwrap and convert properly
     const hashResult = hashedStream0.result;
     
-    // The result has structure: {type: "ok", value: {type: "buffer", value: "hex-string"}}
-    // Check if it's an ok response (type is string "ok")
     if (hashResult.type !== "ok") {
       throw new Error(`hash-stream failed: ${JSON.stringify(hashResult)}`);
     }
     
     // Extract the buffer value - it's already a hex string
-    const hashValue = "0x" + hashResult.value.value;
+    const hashValue = hashResult.value.value;
 
+    // FIX: Renamed variable to match usage below
     const senderSignature = signMessageHashRsv({
-      messageHash: hashValue,
+      messageHash: hashValue.replace(/^0x/, ''),
       privateKey: "7287ba251d44a4d3fd9276c88ce34c5c52a038955511cccaf77e61068649c17801",
     });
 
@@ -224,7 +220,7 @@ describe("test token streaming contract", () => {
         Cl.uint(1),
         Cl.tuple({ "start-block": Cl.uint(0), "stop-block": Cl.uint(4) }),
         Cl.principal(sender),
-        Cl.bufferFromHex(senderSignature.data),
+        Cl.bufferFromHex(senderSignature), // FIX: Use senderSignature directly, not .data
       ],
       recipient
     );
